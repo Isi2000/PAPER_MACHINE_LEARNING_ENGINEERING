@@ -1,0 +1,54 @@
+\documentclass[12pt]{iopart}
+\usepackage{iopams}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+
+\title{Your Paper Title Here}
+
+\author{First Author$^{1}$, Second Author$^{2}$}
+
+\address{$^{1}$Department, University, City, Country}
+\address{$^{2}$Department, University, City, Country}
+
+\ead{author@email.com}
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\vspace{2pc}
+\noindent{\it Keywords}: machine learning, engineering
+
+\maketitle
+
+% =========================
+% Sections
+% =========================
+
+\input{sections/introduction}
+
+\input{sections/related_work}
+
+\input{sections/methodology}
+
+\input{sections/experiments}
+
+\input{sections/results}
+
+\input{sections/conclusion}
+
+\input{sections/acknowledgments}
+
+% =========================
+% Bibliography
+% =========================
+
+\bibliographystyle{iopart-num}
+\bibliography{references}
+
+\end{document}
