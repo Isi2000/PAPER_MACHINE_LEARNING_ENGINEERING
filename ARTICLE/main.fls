@@ -1,0 +1,7 @@
+PWD /home/isacco/PROJECTS/GPR_EXPANSION/ARTICLE
+INPUT /etc/texmf/web2c/texmf.cnf
+INPUT /usr/share/texmf/web2c/texmf.cnf
+INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
+INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
+INPUT /home/isacco/PROJECTS/GPR_EXPANSION/ARTICLE/main.tex
+OUTPUT /home/isacco/PROJECTS/GPR_EXPANSION/ARTICLE/main.log

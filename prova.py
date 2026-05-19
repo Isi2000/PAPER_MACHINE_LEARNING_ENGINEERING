@@ -1,27 +1,27 @@
 """
 HOSVD + GPR  vs  POD + GPR  on (Re, mf) — single held-out test at (Re=15000, mf=0.12)
 ========================================================================================
-Leave out one simulation, fit HOSVD **and** POD on the remaining 24, then predict
-the held-out field via GPR.
+Both methods are trained on the same 16 cases: the 4×4 sub-grid that excludes
+the entire Re=15000 row AND the entire mf=0.12 column.
 
-HOSVD path: arrange the 24 training cases on a regular (5 × 5) (Re, mf) grid (filling
-            the missing test entry by additive interpolation), then run HOSVD on the
-            resulting (5, 5, Nz, Nx, Nsp) tensor.  Modes 0 and 1 of the decomposition
-            give U_re (5 × r_re) and U_mf (5 × r_mf) directly.  Two **separate 1D
-            GPRs** — one per axis — predict the factor rows at the test condition; the
-            predictions are contracted with the Tucker core to reconstruct the field.
+  Re  training axis : [11000, 13000, 17000, 19000]   (4 values)
+  mf  training axis : [0.04,  0.08,  0.16,  0.20]   (4 values)
 
-POD path  : SVD of the flattened (Nz·Nx·Nsp × 24) training matrix gives spatial modes
-            V_pod.  A single **2D GPR** in (Re, mf) parameter space then predicts the
-            POD coefficients a_pred for the test condition.
+HOSVD path: arrange the 16 training cases on a (4×4) grid, run HOSVD on the
+            resulting (4, 4, Nz, Nx, Nsp) tensor.  Two separate 1D GPRs predict
+            the new factor rows at Re=15000 and mf=0.12; these are contracted
+            with the Tucker core to reconstruct the field.
+
+POD path  : SVD of the flattened (Nz·Nx·Nsp × 16) training matrix.  A single
+            2D GPR in (Re, mf) space predicts POD coefficients at the test point.
 
 Saves:
-  plots/singular_values.png            — HOSVD mode decay (5 modes) + POD sv decay
-  plots/gpr_coeffs_hosvd_re.png        — predicted vs true U_re row at Re_TEST
-  plots/gpr_coeffs_hosvd_mf.png        — predicted vs true U_mf row at MF_TEST
-  plots/gpr_coeffs_pod.png             — predicted vs true POD coefficients (2D GPR)
-  plots/relative_error_per_feat.png    — HOSVD vs POD relative L2 error per species
-  plots/field_{species}.png            — original | HOSVD recon | POD recon | errors
+  plots/singular_values.png
+  plots/gpr_coeffs_hosvd_re.png
+  plots/gpr_coeffs_hosvd_mf.png
+  plots/gpr_coeffs_pod.png
+  plots/relative_error_per_feat.png
+  plots/field_{species}.png
 """
 
 import warnings
@@ -61,6 +61,10 @@ MF_VALS = [0.04,  0.08,  0.12,  0.16,  0.20]
 RE_TEST = 15000
 MF_TEST = 0.12
 
+# Training axes: exclude the test Re row and test mf column entirely
+RE_TRAIN_VALS = [v for v in RE_VALS if v != RE_TEST]   # [11000, 13000, 17000, 19000]
+MF_TRAIN_VALS = [v for v in MF_VALS if v != MF_TEST]   # [0.04, 0.08, 0.16, 0.20]
+
 IMPORTANT_FIELDS = ['T', 'CO2', 'CH4', 'H2O', 'CO', 'O2', 'H2']
 
 
@@ -85,7 +89,7 @@ def hosvd(tensor, energy_threshold=0.99):
     for mode in tqdm(range(tensor.ndim), desc='HOSVD modes'):
         U, S, _ = np.linalg.svd(tl.unfold(tensor, mode), full_matrices=False)
         r = rank_by_energy(S, energy_threshold)
-        factors.append(U[:, :r])
+        factors.append(U[:, :])
         sv_list.append(S)
     core = tl.tenalg.multi_mode_dot(
         tensor, [f.T for f in factors], modes=list(range(tensor.ndim))
@@ -104,13 +108,13 @@ def minmax(a):
 
 
 def make_mo_gpr_2d():
-    kernel = ConstantKernel(1.0) * Matern(length_scale=np.ones(2), length_scale_bounds='fixed', nu=2.5)
+    kernel = ConstantKernel(1.0) * Matern(length_scale=np.ones(2), length_scale_bounds=(1e-10, 1e5), nu=2.5)
     base   = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=5, normalize_y=True)
     return MultiOutputRegressor(base)
 
 
 def make_mo_gpr_1d():
-    kernel = ConstantKernel(1.0) * Matern(length_scale=1.0, length_scale_bounds='fixed', nu=2.5)
+    kernel = ConstantKernel(1.0) * Matern(length_scale=1.0, length_scale_bounds=(1e-10, 1e5), nu=2.5)
     base   = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=5, normalize_y=True)
     return MultiOutputRegressor(base)
 
@@ -122,43 +126,33 @@ Nz, Nx, Nsp  = sample_grid.shape
 x_min, x_max = x_vals.min(), x_vals.max()
 z_min, z_max = z_vals.min(), z_vals.max()
 
-params      = np.array([[re, mf] for re in RE_VALS for mf in MF_VALS])  # (25, 2)
-tensor_flat = np.empty((len(params), Nz, Nx, Nsp), dtype=np.float32)
-for k, (re, mf) in enumerate(params):
+params_all      = np.array([[re, mf] for re in RE_VALS for mf in MF_VALS])  # (25, 2)
+tensor_flat_all = np.empty((len(params_all), Nz, Nx, Nsp), dtype=np.float32)
+for k, (re, mf) in enumerate(params_all):
     path = next(CASES_DIR.glob(f'*_mfH2_{mf:.2f}_Re_{int(re)}.xy'))
-    tensor_flat[k], _, _ = load_case(path)
+    tensor_flat_all[k], _, _ = load_case(path)
 
-print(f'Tensor shape: {tensor_flat.shape}')
-
-
-# ── 2. train / test split ─────────────────────────────────────────────────────
-test_mask  = (params[:, 0] == RE_TEST) & (params[:, 1] == MF_TEST)
-test_idx   = int(np.where(test_mask)[0][0])
-train_mask = ~test_mask
-
-params_train = params[train_mask]       # (24, 2)
-T_train      = tensor_flat[train_mask]  # (24, Nz, Nx, Nsp)  physical units
-T_test_true  = tensor_flat[test_idx]    # (Nz, Nx, Nsp)      physical units
+print(f'Full tensor shape: {tensor_flat_all.shape}')
 
 
-# ── 2b. grid helpers (shared) ─────────────────────────────────────────────────
-n_re = len(RE_VALS)
-n_mf = len(MF_VALS)
-re_to_idx = {v: i for i, v in enumerate(RE_VALS)}
-mf_to_idx = {round(v, 2): j for j, v in enumerate(MF_VALS)}
+# ── 2. train / test split — 4×4 grid, same 16 cases for both methods ─────────
+# Training: only cases where Re ∈ RE_TRAIN_VALS AND mf ∈ MF_TRAIN_VALS (16 cases)
+# Test: Re=15000, mf=0.12 (1 case)
+def in_train(re, mf):
+    return (re in RE_TRAIN_VALS) and (round(mf, 2) in [round(v, 2) for v in MF_TRAIN_VALS])
 
-i_miss = re_to_idx[RE_TEST]
-j_miss = mf_to_idx[MF_TEST]
+def is_test(re, mf):
+    return (re == RE_TEST) and (round(mf, 2) == round(MF_TEST, 2))
 
-has_val = np.zeros((n_re, n_mf), dtype=bool)
-for re, mf in params_train:
-    has_val[re_to_idx[int(re)], mf_to_idx[round(mf, 2)]] = True
+train_mask = np.array([in_train(re, mf) for re, mf in params_all])
+test_mask  = np.array([is_test(re, mf)  for re, mf in params_all])
 
-# minmax-normalised axes for 1D GPRs
-Re_nm         = minmax(np.array(RE_VALS, float))          # (5,)
-Mf_nm         = minmax(np.array(MF_VALS, float))          # (5,)
-re_train_mask = np.array([v != RE_TEST for v in RE_VALS])
-mf_train_mask = np.array([v != MF_TEST for v in MF_VALS])
+params_train = params_all[train_mask]       # (16, 2)
+T_train      = tensor_flat_all[train_mask]  # (16, Nz, Nx, Nsp)
+T_test_true  = tensor_flat_all[test_mask][0]  # (Nz, Nx, Nsp)
+
+print(f'Training cases: {len(params_train)}  (4×4 grid, Re∈{RE_TRAIN_VALS}, mf∈{MF_TRAIN_VALS})')
+print(f'Test case: Re={RE_TEST}, mf={MF_TEST}')
 
 
 # ── 3. scale on training statistics only ─────────────────────────────────────
@@ -167,46 +161,45 @@ mu  = T_train.mean(axis=(0, 1, 2), keepdims=True)   # (1,1,1,Nsp)
 std = T_train.std(axis=(0, 1, 2),  keepdims=True)
 std = np.where(std < eps, 1.0, std)
 
-T_train_s = (T_train - mu) / std   # (24, Nz, Nx, Nsp) — used by POD
+T_train_s = (T_train - mu) / std   # (16, Nz, Nx, Nsp)
 
 
-# ── 4. build (5, 5, Nz, Nx, Nsp) grid tensor for HOSVD ──────────────────────
-T_grid = np.zeros((n_re, n_mf, Nz, Nx, Nsp), dtype=np.float32)
+# ── 4. build (4, 4, Nz, Nx, Nsp) grid tensor for HOSVD ──────────────────────
+n_re_tr = len(RE_TRAIN_VALS)
+n_mf_tr = len(MF_TRAIN_VALS)
+re_to_idx_tr = {v: i for i, v in enumerate(RE_TRAIN_VALS)}
+mf_to_idx_tr = {round(v, 2): j for j, v in enumerate(MF_TRAIN_VALS)}
+
+T_grid = np.zeros((n_re_tr, n_mf_tr, Nz, Nx, Nsp), dtype=np.float32)
 for k, (re, mf) in enumerate(params_train):
-    i, j = re_to_idx[int(re)], mf_to_idx[round(mf, 2)]
+    i = re_to_idx_tr[int(re)]
+    j = mf_to_idx_tr[round(mf, 2)]
     T_grid[i, j] = T_train[k]
 
-# fill missing test entry by additive interpolation (physical space)
-T_grid[i_miss, j_miss] = (
-    T_grid[:, j_miss][has_val[:, j_miss]].mean(axis=0) +
-    T_grid[i_miss, :][has_val[i_miss, :]].mean(axis=0) -
-    T_grid[has_val].mean(axis=0)
-)
-
-T_grid_s = (T_grid - mu) / std   # (5, 5, Nz, Nx, Nsp)
+T_grid_s = (T_grid - mu) / std   # (4, 4, Nz, Nx, Nsp)
+print(f'\nHOSVD grid tensor shape: {T_grid_s.shape}')
 
 
-# ── 5. HOSVD on the 5D grid tensor ───────────────────────────────────────────
-# modes: 0=Re(5), 1=mf(5), 2=z(Nz), 3=x(Nx), 4=species(Nsp)
-print('Running HOSVD on (5, 5, Nz, Nx, Nsp) grid tensor...')
+# ── 5. HOSVD on the 4×4 grid tensor ──────────────────────────────────────────
+print('Running HOSVD on (4, 4, Nz, Nx, Nsp) grid tensor...')
 core, factors, sv_list = hosvd(T_grid_s)
 U_re, U_mf, U_z, U_x, U_spec = factors
 r_re, r_mf = U_re.shape[1], U_mf.shape[1]
 print(f'U_re: {U_re.shape}   U_mf: {U_mf.shape}   core: {core.shape}')
 
 
-# ── 6. POD on the flattened training matrix ───────────────────────────────────
-print('Running POD (SVD on flattened training matrix)...')
-mat_tr           = T_train_s.reshape(len(params_train), -1).T   # (Nz*Nx*Nsp, 24)
+# ── 6. POD on the same 16 training cases ─────────────────────────────────────
+print('\nRunning POD (SVD on flattened 16-case training matrix)...')
+mat_tr           = T_train_s.reshape(len(params_train), -1).T   # (Nz*Nx*Nsp, 16)
 V_pod, S_pod, _  = np.linalg.svd(mat_tr, full_matrices=False)
 r_pod            = rank_by_energy(S_pod)
 V_pod            = V_pod[:, :r_pod]
-a_tr             = (V_pod.T @ mat_tr).T                         # (24, r_pod)
+a_tr             = (V_pod.T @ mat_tr).T                         # (16, r_pod)
 print(f'POD rank: {r_pod}')
 
 
 # ── 7. singular value decay ───────────────────────────────────────────────────
-mode_names = [f'Re ({n_re})', f'mf ({n_mf})', f'z ({Nz})', f'x ({Nx})', f'species ({Nsp})']
+mode_names = [f'Re ({n_re_tr})', f'mf ({n_mf_tr})', f'z ({Nz})', f'x ({Nx})', f'species ({Nsp})']
 fig, axs = plt.subplots(1, 6, figsize=(20, 3))
 
 for ax, sv, name, trunc in zip(axs[:5], sv_list, mode_names, [f.shape[1] for f in factors]):
@@ -219,7 +212,7 @@ for ax, sv, name, trunc in zip(axs[:5], sv_list, mode_names, [f.shape[1] for f i
 
 axs[5].semilogy(np.arange(1, len(S_pod) + 1), S_pod / S_pod[0], 's-', ms=3, color='darkorange')
 axs[5].axvline(r_pod, color='red', ls='--', label=f'r={r_pod}')
-axs[5].set_title('POD (flattened matrix)')
+axs[5].set_title('POD (16-case matrix)')
 axs[5].set_xlabel('index')
 axs[5].legend(fontsize=8)
 axs[5].grid(True)
@@ -231,20 +224,31 @@ print('Saved plots/singular_values.png')
 
 
 # ── 8. HOSVD GPR: two 1D GPRs on U_re and U_mf rows ─────────────────────────
-# 1D GPR_Re: 4 training Re values → predict row of U_re at RE_TEST
+# Normalised training axes (all 4 points used for training, predict at new value)
+Re_tr_nm   = minmax(np.array(RE_TRAIN_VALS, float))          # (4,) in [0,1]
+Mf_tr_nm   = minmax(np.array(MF_TRAIN_VALS, float))          # (4,) in [0,1]
+
+# Normalise test point onto the same scale as training axes
+Re_test_nm = (RE_TEST - min(RE_TRAIN_VALS)) / (max(RE_TRAIN_VALS) - min(RE_TRAIN_VALS))
+Mf_test_nm = (MF_TEST - min(MF_TRAIN_VALS)) / (max(MF_TRAIN_VALS) - min(MF_TRAIN_VALS))
+
+print(f'\nHOSVD 1D GPR — Re: training on {Re_tr_nm}, predicting at {Re_test_nm:.3f}')
+print(f'HOSVD 1D GPR — mf: training on {Mf_tr_nm}, predicting at {Mf_test_nm:.3f}')
+
+# GPR_Re: all 4 training Re rows → predict at RE_TEST
 print('Fitting HOSVD GPR for Re axis (1D)...')
 gpr_re_h = make_mo_gpr_1d()
-gpr_re_h.fit(Re_nm[re_train_mask].reshape(-1, 1), U_re[re_train_mask])
-preds_re_h    = [est.predict(Re_nm[~re_train_mask].reshape(-1, 1), return_std=True)
+gpr_re_h.fit(Re_tr_nm.reshape(-1, 1), U_re)   # U_re is (4, r_re)
+preds_re_h    = [est.predict([[Re_test_nm]], return_std=True)
                  for est in gpr_re_h.estimators_]
 alpha_Re_pred = np.array([p[0].item() for p in preds_re_h])   # (r_re,)
 alpha_Re_std  = np.array([p[1].item() for p in preds_re_h])
 
-# 1D GPR_mf: 4 training mf values → predict row of U_mf at MF_TEST
+# GPR_mf: all 4 training mf rows → predict at MF_TEST
 print('Fitting HOSVD GPR for mf axis (1D)...')
 gpr_mf_h = make_mo_gpr_1d()
-gpr_mf_h.fit(Mf_nm[mf_train_mask].reshape(-1, 1), U_mf[mf_train_mask])
-preds_mf_h    = [est.predict(Mf_nm[~mf_train_mask].reshape(-1, 1), return_std=True)
+gpr_mf_h.fit(Mf_tr_nm.reshape(-1, 1), U_mf)   # U_mf is (4, r_mf)
+preds_mf_h    = [est.predict([[Mf_test_nm]], return_std=True)
                  for est in gpr_mf_h.estimators_]
 alpha_mf_pred = np.array([p[0].item() for p in preds_mf_h])   # (r_mf,)
 alpha_mf_std  = np.array([p[1].item() for p in preds_mf_h])
@@ -255,7 +259,7 @@ param_scaler = StandardScaler().fit(params_train)
 P_train_s    = param_scaler.transform(params_train)
 P_test_s     = param_scaler.transform([[RE_TEST, MF_TEST]])
 
-print('Fitting POD GPR (2D, Re × mf)...')
+print('\nFitting POD GPR (2D, Re × mf)...')
 mo_gpr_pod = make_mo_gpr_2d()
 mo_gpr_pod.fit(P_train_s, a_tr)
 
@@ -264,43 +268,38 @@ a_pred    = np.array([p[0].item() for p in preds_pod])   # (r_pod,)
 a_std     = np.array([p[1].item() for p in preds_pod])
 
 
-# ── 10. true coefficients ─────────────────────────────────────────────────────
-# HOSVD: true factor rows at the test grid position
-alpha_Re_true = U_re[i_miss]   # (r_re,)
-alpha_mf_true = U_mf[j_miss]   # (r_mf,)
-
+# ── 10. true coefficients (for plotting only — not used in reconstruction) ────
 # POD: project test case onto spatial modes
 T_test_s = (T_test_true - mu.squeeze()) / std.squeeze()
 a_true   = (V_pod.T @ T_test_s.ravel()).ravel()   # (r_pod,)
 
+# Note: there are no "true" U_re / U_mf rows for the test point since it was
+# never in the HOSVD training tensor.  We instead compare reconstruction quality.
 
-# ── 11a. HOSVD coefficient plot — Re axis ─────────────────────────────────────
+
+# ── 11. HOSVD coefficient plots ───────────────────────────────────────────────
 comp_re = np.arange(r_re)
 fig, ax = plt.subplots(figsize=(8, 4))
-ax.plot(comp_re, alpha_Re_true, 'k-o',  ms=5, lw=1.2, label='True $U_{re}$ row')
 ax.plot(comp_re, alpha_Re_pred, 'r--s', ms=5, lw=1.2, label='1D GPR prediction')
 ax.fill_between(comp_re, alpha_Re_pred - alpha_Re_std, alpha_Re_pred + alpha_Re_std,
                 alpha=0.25, color='red', label='±1 σ')
 ax.set_xlabel('Re component index')
 ax.set_ylabel('$U_{re}$ coefficient')
-ax.set_title(f'HOSVD 1D GPR (Re axis) at Re={RE_TEST}  |  r_re={r_re}')
+ax.set_title(f'HOSVD 1D GPR (Re axis) — extrapolated to Re={RE_TEST}  |  r_re={r_re}')
 ax.legend()
 ax.grid(True)
 plt.tight_layout()
 fig.savefig(PLOT_DIR / 'gpr_coeffs_hosvd_re.png', dpi=150, bbox_inches='tight')
 print('Saved plots/gpr_coeffs_hosvd_re.png')
 
-
-# ── 11b. HOSVD coefficient plot — mf axis ─────────────────────────────────────
 comp_mf = np.arange(r_mf)
 fig, ax = plt.subplots(figsize=(8, 4))
-ax.plot(comp_mf, alpha_mf_true, 'k-o',  ms=5, lw=1.2, label='True $U_{mf}$ row')
 ax.plot(comp_mf, alpha_mf_pred, 'r--s', ms=5, lw=1.2, label='1D GPR prediction')
 ax.fill_between(comp_mf, alpha_mf_pred - alpha_mf_std, alpha_mf_pred + alpha_mf_std,
                 alpha=0.25, color='red', label='±1 σ')
 ax.set_xlabel('mf component index')
 ax.set_ylabel('$U_{mf}$ coefficient')
-ax.set_title(f'HOSVD 1D GPR (mf axis) at mf={MF_TEST}  |  r_mf={r_mf}')
+ax.set_title(f'HOSVD 1D GPR (mf axis) — extrapolated to mf={MF_TEST}  |  r_mf={r_mf}')
 ax.legend()
 ax.grid(True)
 plt.tight_layout()
@@ -308,7 +307,7 @@ fig.savefig(PLOT_DIR / 'gpr_coeffs_hosvd_mf.png', dpi=150, bbox_inches='tight')
 print('Saved plots/gpr_coeffs_hosvd_mf.png')
 
 
-# ── 12. POD coefficient plot (2D GPR) ─────────────────────────────────────────
+# ── 12. POD coefficient plot ──────────────────────────────────────────────────
 comp_pod = np.arange(r_pod)
 fig, ax = plt.subplots(figsize=(10, 4))
 ax.plot(comp_pod, a_true, 'k-o',  ms=5, lw=1.2, label='True (projection onto POD modes)')
@@ -317,8 +316,8 @@ ax.fill_between(comp_pod, a_pred - a_std, a_pred + a_std,
                 alpha=0.25, color='red', label='±1 σ')
 ax.set_xlabel('POD mode index')
 ax.set_ylabel('POD coefficient')
-ax.set_title(f'POD 2D GPR-predicted vs true coefficients at (Re={RE_TEST}, mf={MF_TEST})\n'
-             f'trained on {len(params_train)} conditions')
+ax.set_title(f'POD 2D GPR — predicted vs true coefficients at (Re={RE_TEST}, mf={MF_TEST})\n'
+             f'trained on {len(params_train)} conditions (4×4 grid)')
 ax.legend()
 ax.grid(True)
 plt.tight_layout()
@@ -327,8 +326,7 @@ print('Saved plots/gpr_coeffs_pod.png')
 
 
 # ── 13. reconstruct fields ────────────────────────────────────────────────────
-# HOSVD: contract modes 0 and 1 of the Tucker core with predicted factor rows,
-#        then expand with spatial/species factors.
+# HOSVD: contract modes 0 and 1 of the Tucker core with predicted factor rows
 Z_hosvd   = tl.tenalg.mode_dot(core, alpha_Re_pred, mode=0)    # (r_mf, r_z, r_x, r_sp)
 Z_hosvd   = tl.tenalg.mode_dot(Z_hosvd, alpha_mf_pred, mode=0) # (r_z, r_x, r_sp)
 recon_s_h = tl.tenalg.multi_mode_dot(Z_hosvd, [U_z, U_x, U_spec], modes=[0, 1, 2])
@@ -351,13 +349,14 @@ x = np.arange(len(IMPORTANT_FIELDS))
 w = 0.35
 fig, ax = plt.subplots(figsize=(9, 4))
 ax.bar(x - w/2, errors_h, w, color='#2196F3', alpha=0.85,
-       label=f'HOSVD 5D + 2×1D GPR  (r_re={r_re}, r_mf={r_mf}, mean={np.mean(errors_h):.4f})')
+       label=f'HOSVD 4×4 + 2×1D GPR  (r_re={r_re}, r_mf={r_mf}, mean={np.mean(errors_h):.4f})')
 ax.bar(x + w/2, errors_p, w, color='#FF5722', alpha=0.85,
        label=f'POD + 2D GPR  (r_pod={r_pod}, mean={np.mean(errors_p):.4f})')
 ax.set_xticks(x)
 ax.set_xticklabels(IMPORTANT_FIELDS, rotation=45, ha='right')
 ax.set_ylabel('Relative L2 error')
-ax.set_title(f'Per-feature relative error — (Re={RE_TEST}, mf={MF_TEST})')
+ax.set_title(f'Per-feature relative error — (Re={RE_TEST}, mf={MF_TEST})\n'
+             f'Both methods trained on same 16 cases (4×4 grid)')
 ax.legend(fontsize=9)
 ax.grid(axis='y', linestyle='--', alpha=0.5)
 plt.tight_layout()
@@ -367,7 +366,7 @@ print('Saved plots/relative_error_per_feat.png')
 
 # ── 15. per-feature spatial figures ──────────────────────────────────────────
 extent       = [x_min, x_max, z_min, z_max]
-suptitle_sub = f'Re={RE_TEST}, mf={MF_TEST}  |  trained on {len(params_train)} conditions'
+suptitle_sub = f'Re={RE_TEST}, mf={MF_TEST}  |  trained on {len(params_train)} conditions (4×4 grid)'
 
 for name in IMPORTANT_FIELDS:
     sp = COL_IDX[name]
@@ -386,7 +385,7 @@ for name in IMPORTANT_FIELDS:
 
     for ax, title, field in zip(axes[0],
                                  ['Original',
-                                  'HOSVD 5D + 2×1D GPR',
+                                  'HOSVD 4×4 + 2×1D GPR',
                                   'POD + 2D GPR'],
                                  [F_true, F_hosvd, F_pod]):
         im = ax.imshow(field, origin='lower', aspect='auto', extent=extent,
