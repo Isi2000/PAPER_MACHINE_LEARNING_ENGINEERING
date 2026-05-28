@@ -1,3 +1,7 @@
-\section{Conclusion}
+\section{Conclusione}
 
-Conclusion text here.
+In questo lavoro è stato proposto un metodo surrogato per la predizione di campi fluidodinamici reattivi parametrici basato sulla decomposizione Tucker (HOSVD) combinata con regressione a processi gaussiani (GPR). Il metodo sfrutta la struttura tensoriale dei dati di addestramento, organizzati su una griglia cartesiana nello spazio dei parametri, per disaccoppiare le modalità parametriche dalle modalità spaziali. Due GPR univariati, uno per l'asse del numero di Reynolds e uno per l'asse della frazione di massa del combustibile, sostituiscono il singolo GPR bivariato impiegato nell'approccio classico POD+GPR.
+
+I risultati sperimentali su un dataset di 100 simulazioni di fiamma a diffusione di idrogeno mostrano che HOSVD+GPR supera sistematicamente POD+GPR in termini di errore relativo $\ell^2$ su tutti e sei i campi esaminati (temperatura, $\mathrm{CH_4}$, $\mathrm{O_2}$, $\mathrm{CO}$, $\mathrm{CO_2}$, $\mathrm{H_2O}$), con un miglioramento più marcato per i campi a variazione nonlineare più intensa. Il vantaggio è riconducibile a due fattori strutturali: la separazione delle modalità parametriche riduce la dimensione effettiva del problema di regressione, e il nucleo di Tucker codifica algebricamente l'interazione tra i parametri, sollevando il GPR dall'onere di modellarla statisticamente.
+
+Lavori futuri includeranno l'estensione del metodo a spazi parametrici di dimensione superiore (ad esempio aggiungendo la geometria del bruciatore come parametro), l'adozione di kernel più espressivi o reti neurali come surrogati per i coefficienti delle modalità, e la validazione su dataset con geometrie tridimensionali. Si prevede inoltre di investigare strategie adattive per la selezione del set di addestramento in modo da massimizzare l'accuratezza del surrogato con il minor numero possibile di simulazioni CFD.

@@ -1,33 +1,521 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2024.3.14)  19 MAY 2026 19:05
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2024.3.14)  25 MAY 2026 18:00
 entering extended mode
  restricted \write18 enabled.
- file:line:error style messages enabled.
  %&-line parsing enabled.
-**/home/isacco/PROJECTS/GPR_EXPANSION/ARTICLE/main.tex
-(/home/isacco/PROJECTS/GPR_EXPANSION/ARTICLE/main.tex
+**main.tex
+(./main.tex
 LaTeX2e <2020-02-02> patch level 2
-L3 programming layer <2020-02-14>
+L3 programming layer <2020-02-14> (./iop/iopart.cls
+Document Class: iopart 1996/06/10 v0.0 IOP Journals LaTeX article class
+(./iop/iopart12.clo
+File: iopart12.clo 1997/01/15 v1.0 LaTeX2e file (size option)
+)
+\c@jnl=\count167
+\c@section=\count168
+\c@subsection=\count169
+\c@subsubsection=\count170
+\c@paragraph=\count171
+\c@subparagraph=\count172
+\c@figure=\count173
+\c@table=\count174
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\indentedwidth=\skip49
+\mathindent=\dimen134
+\c@eqnval=\count175
+) (./iop/iopams.sty
+Package: iopams 1997/02/13 v1.0
 
-! LaTeX Error: File `iopart.cls' not found.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks14
+\ex@=\dimen135
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen136
+))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2020/01/20 v2.17e AMS math features
+\@mathmargin=\skip50
 
-Type X to quit or <RETURN> to proceed,
-or enter new name. (Default extension: cls)
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01 AMS text
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count176
+LaTeX Info: Redefining \frac on input line 227.
+\uproot@=\count177
+\leftroot@=\count178
+LaTeX Info: Redefining \overline on input line 389.
+\classnum@=\count179
+\DOTSCASE@=\count180
+LaTeX Info: Redefining \ldots on input line 486.
+LaTeX Info: Redefining \dots on input line 489.
+LaTeX Info: Redefining \cdots on input line 610.
+\Mathstrutbox@=\box45
+\strutbox@=\box46
+\big@size=\dimen137
+LaTeX Font Info:    Redeclaring font encoding OML on input line 733.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 734.
+\macc@depth=\count181
+\c@MaxMatrixCols=\count182
+\dotsspace@=\muskip16
+\c@parentequation=\count183
+\dspbrk@lvl=\count184
+\tag@help=\toks15
+\row@=\count185
+\column@=\count186
+\maxfields@=\count187
+\andhelp@=\toks16
+\eqnshift@=\dimen138
+\alignsep@=\dimen139
+\tagshift@=\dimen140
+\tagwidth@=\dimen141
+\totwidth@=\dimen142
+\lineht@=\dimen143
+\@envbody=\toks17
+\multlinegap=\skip51
+\multlinetaggap=\skip52
+\mathdisplay@stack=\toks18
+LaTeX Info: Redefining \[ on input line 2859.
+LaTeX Info: Redefining \] on input line 2860.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2019/11/30 v1.2a Enhanced LaTeX Graphics (DPC,SPQR)
 
-Enter file name: 
-/home/isacco/PROJECTS/GPR_EXPANSION/ARTICLE/main.tex:2: Emergency stop.
-<read *> 
-         
-l.2 \usepackage
-               {iopams}^^M
-*** (cannot \read from terminal in nonstop modes)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks19
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2019/11/30 v1.4a Standard LaTeX Graphics (DPC,SPQR)
 
- 
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 105.
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen144
+\Gin@req@width=\dimen145
+)
+(/usr/share/texlive/texmf-dist/tex/latex/cite/cite.sty
+LaTeX Info: Redefining \cite on input line 302.
+LaTeX Info: Redefining \nocite on input line 332.
+Package: cite 2015/02/27  v 5.5
+)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2020/01/14 v7.00d Hypertext links for LaTeX
+
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2019/12/15 v1.24 LaTeX kernel commands for general use (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2019/11/07 v1.0c TeX engine tests
+)
+(/usr/share/texlive/texmf-dist/tex/latex/pdftexcmds/pdftexcmds.sty
+Package: pdftexcmds 2019/11/24 v0.31 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+(/usr/share/texlive/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty
+Package: kvsetkeys 2019/12/15 v1.18 Key value parser (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty
+Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty
+Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/auxhook/auxhook.sty
+Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+Package: kvoptions 2019/11/29 v3.13 Key value format for package options (HO)
+)
+\@linkdim=\dimen146
+\Hy@linkcounter=\count188
+\Hy@pagecounter=\count189
+
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2020/01/14 v7.00d Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty
+Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/etexcmds/etexcmds.sty
+Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
+)
+\Hy@SavedSpaceFactor=\count190
+\pdfmajorversion=\count191
+Package hyperref Info: Hyper figures OFF on input line 4547.
+Package hyperref Info: Link nesting OFF on input line 4552.
+Package hyperref Info: Hyper index ON on input line 4555.
+Package hyperref Info: Plain pages OFF on input line 4562.
+Package hyperref Info: Backreferencing OFF on input line 4567.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4800.
+\c@Hy@tempcnt=\count192
+
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip17
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 5159.
+\XeTeXLinkMargin=\dimen147
+
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
+)
+))
+\Fld@menulength=\count193
+\Field@Width=\dimen148
+\Fld@charsize=\dimen149
+Package hyperref Info: Hyper figures OFF on input line 6430.
+Package hyperref Info: Link nesting OFF on input line 6435.
+Package hyperref Info: Hyper index ON on input line 6438.
+Package hyperref Info: backreferencing OFF on input line 6445.
+Package hyperref Info: Link coloring OFF on input line 6450.
+Package hyperref Info: Link coloring with OCG OFF on input line 6455.
+Package hyperref Info: PDF/A mode OFF on input line 6460.
+LaTeX Info: Redefining \ref on input line 6500.
+LaTeX Info: Redefining \pageref on input line 6504.
+
+(/usr/share/texlive/texmf-dist/tex/generic/atbegshi/atbegshi.sty
+Package: atbegshi 2019/12/05 v1.19 At begin shipout hook (HO)
+)
+\Hy@abspage=\count194
+\c@Item=\count195
+\c@Hfootnote=\count196
+)
+Package hyperref Info: Driver (autodetected): hpdftex.
+
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2020/01/14 v7.00d Hyperref driver for pdfTeX
+
+(/usr/share/texlive/texmf-dist/tex/latex/atveryend/atveryend.sty
+Package: atveryend 2019-12-11 v1.11 Hooks at the very end of document (HO)
+Package atveryend Info: \enddocument detected (standard20110627).
+)
+\Fld@listcount=\count197
+\c@bookmark@seq@number=\count198
+
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+Package: rerunfilecheck 2019/12/05 v1.9 Rerun checks for auxiliary files (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
+Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
+)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+86.
+)
+\Hy@SectionHShift=\skip53
+)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
+File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
+\l__kernel_color_stack_int=\count199
+\l__pdf_internal_box=\box47
+)
+(./main.aux)
+\openout1 = `main.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+ (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count266
+\scratchdimen=\dimen150
+\scratchbox=\box48
+\nofMPsegments=\count267
+\nofMParguments=\count268
+\everyMPshowfont=\toks20
+\MPscratchCnt=\count269
+\MPscratchDim=\dimen151
+\MPnumerator=\count270
+\makeMPintoPDFobject=\count271
+\everyMPtoPDFconversion=\toks21
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+\AtBeginShipoutBox=\box49
+Package hyperref Info: Link coloring OFF on input line 13.
+
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
+
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
+Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
+)
+\c@section@level=\count272
+)
+LaTeX Info: Redefining \ref on input line 13.
+LaTeX Info: Redefining \pageref on input line 13.
+LaTeX Info: Redefining \nameref on input line 13.
+
+(./main.out) (./main.out)
+\@outlinefile=\write3
+\openout3 = `main.out'.
+
+LaTeX Font Info:    Trying to load font information for U+msa on input line 17.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 17.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+(./sections/abstract.tex) [1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./sections/introduction.t
+ex) (./sections/related_work.tex [2])
+(./sections/methodology.tex [3]
+Underfull \hbox (badness 1584) in paragraph at lines 16--18
+\OT1/cmr/m/n/12 Tutti i modelli surrogati operano sui dati normalizzati; le pre
+dizioni vengono
+ []
+
+
+Underfull \hbox (badness 2680) in paragraph at lines 43--44
+ \OT1/cmr/m/it/12 3.4.1. Organizzazione tensoriale[][] \OT1/cmr/m/n/12 Quando g
+li snapshot di addestramento sono
+ []
+
+
+Underfull \hbox (badness 1092) in paragraph at lines 53--54
+ \OT1/cmr/m/it/12 3.4.2. Higher-Order SVD[][] \OT1/cmr/m/n/12 L'HOSVD [[]4[]] f
+attorizza $\OMS/cmsy/m/n/12 T$ \OT1/cmr/m/n/12 tramite una sequenza di
+ []
+
+[4]
+Underfull \hbox (badness 1320) in paragraph at lines 89--92
+ \OT1/cmr/m/it/12 3.4.4. Vantaggi rispetto a POD + GPR[][] \OT1/cmr/m/n/12 Due 
+vantaggi strutturali distinguono
+ []
+
+[5]) (./sections/experiments.tex [6]
+Overfull \hbox (69.82867pt too wide) in paragraph at lines 33--34
+[]\OT1/cmr/m/n/12 lunghezza scala del ker-nel 1-D (per i GPR HOSVD): $\OML/cmm/
+m/it/12 `[] \OMS/cmsy/m/n/12 2 f\OT1/cmr/m/n/12 0\OML/cmm/m/it/12 :\OT1/cmr/m/n
+/12 05\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 0\OML/cmm/m/it/12 :\OT1/cmr/m/n/12 1\O
+ML/cmm/m/it/12 ; \OT1/cmr/m/n/12 0\OML/cmm/m/it/12 :\OT1/cmr/m/n/12 2\OML/cmm/m
+/it/12 ; \OT1/cmr/m/n/12 0\OML/cmm/m/it/12 :\OT1/cmr/m/n/12 3\OML/cmm/m/it/12 ;
+ \OT1/cmr/m/n/12 0\OML/cmm/m/it/12 :\OT1/cmr/m/n/12 5\OML/cmm/m/it/12 ; \OT1/cm
+r/m/n/12 0\OML/cmm/m/it/12 :\OT1/cmr/m/n/12 7\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12
+ 1\OML/cmm/m/it/12 :\OT1/cmr/m/n/12 0\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 1\OML/c
+mm/m/it/12 :\OT1/cmr/m/n/12 5\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 2\OML/cmm/m/it/
+12 :\OT1/cmr/m/n/12 0\OMS/cmsy/m/n/12 g$\OT1/cmr/m/n/12 ; 
+ []
+
+
+Overfull \hbox (43.56209pt too wide) in paragraph at lines 53--67
+ [][] 
+ []
+
+) (./sections/results.tex
+<../GOOD_CODE/plots/singular_values.png, id=189, 1437.6912pt x 223.5552pt>
+File: ../GOOD_CODE/plots/singular_values.png Graphic file (type png)
+<use ../GOOD_CODE/plots/singular_values.png>
+Package pdftex.def Info: ../GOOD_CODE/plots/singular_values.png  used on input 
+line 9.
+(pdftex.def)             Requested size: 424.0786pt x 65.94138pt.
+ [7]
+<../GOOD_CODE/plots_tuner/joint_sweep.png, id=201, 1069.1142pt x 569.4876pt>
+File: ../GOOD_CODE/plots_tuner/joint_sweep.png Graphic file (type png)
+<use ../GOOD_CODE/plots_tuner/joint_sweep.png>
+Package pdftex.def Info: ../GOOD_CODE/plots_tuner/joint_sweep.png  used on inpu
+t line 22.
+(pdftex.def)             Requested size: 424.0786pt x 225.89665pt.
+<../GOOD_CODE/plots_tuner/best_config_errors_Re13000.png, id=204, 642.2394pt x 
+282.3348pt>
+File: ../GOOD_CODE/plots_tuner/best_config_errors_Re13000.png Graphic file (typ
+e png)
+<use ../GOOD_CODE/plots_tuner/best_config_errors_Re13000.png>
+Package pdftex.def Info: ../GOOD_CODE/plots_tuner/best_config_errors_Re13000.pn
+g  used on input line 31.
+(pdftex.def)             Requested size: 379.44269pt x 166.80872pt.
+<../GOOD_CODE/plots_tuner/best_config_errors_Re18000.png, id=205, 642.2394pt x 
+282.3348pt>
+File: ../GOOD_CODE/plots_tuner/best_config_errors_Re18000.png Graphic file (typ
+e png)
+<use ../GOOD_CODE/plots_tuner/best_config_errors_Re18000.png>
+Package pdftex.def Info: ../GOOD_CODE/plots_tuner/best_config_errors_Re18000.pn
+g  used on input line 38.
+(pdftex.def)             Requested size: 379.44269pt x 166.80872pt.
+<../GOOD_CODE/plots/summary_error_vs_mf.png, id=207, 5770.5186pt x 285.7074pt>
+File: ../GOOD_CODE/plots/summary_error_vs_mf.png Graphic file (type png)
+<use ../GOOD_CODE/plots/summary_error_vs_mf.png>
+Package pdftex.def Info: ../GOOD_CODE/plots/summary_error_vs_mf.png  used on in
+put line 49.
+(pdftex.def)             Requested size: 446.39996pt x 22.0985pt.
+<../GOOD_CODE/plots/summary_error_per_field.png, id=209, 1003.5894pt x 355.0866
+pt>
+File: ../GOOD_CODE/plots/summary_error_per_field.png Graphic file (type png)
+<use ../GOOD_CODE/plots/summary_error_per_field.png>
+Package pdftex.def Info: ../GOOD_CODE/plots/summary_error_per_field.png  used o
+n input line 58.
+(pdftex.def)             Requested size: 379.44269pt x 134.2516pt.
+ [8 <../GOOD_CODE/plots/singular_values.png>]
+[9 <../GOOD_CODE/plots_tuner/joint_sweep.png> <../GOOD_CODE/plots_tuner/best_co
+nfig_errors_Re13000.png>]
+<../GOOD_CODE/plots/Re15000_mf01/field_T.png, id=232, 1070.0778pt x 569.0058pt>
+
+File: ../GOOD_CODE/plots/Re15000_mf01/field_T.png Graphic file (type png)
+<use ../GOOD_CODE/plots/Re15000_mf01/field_T.png>
+Package pdftex.def Info: ../GOOD_CODE/plots/Re15000_mf01/field_T.png  used on i
+nput line 71.
+(pdftex.def)             Requested size: 446.39996pt x 237.36589pt.
+<../GOOD_CODE/plots/Re15000_mf01/field_CH4.png, id=233, 1071.5232pt x 569.0058p
+t>
+File: ../GOOD_CODE/plots/Re15000_mf01/field_CH4.png Graphic file (type png)
+<use ../GOOD_CODE/plots/Re15000_mf01/field_CH4.png>
+Package pdftex.def Info: ../GOOD_CODE/plots/Re15000_mf01/field_CH4.png  used on
+ input line 78.
+(pdftex.def)             Requested size: 446.39996pt x 237.05333pt.
+<../GOOD_CODE/plots/Re15000_mf01/field_O2.png, id=235, 1071.5232pt x 569.0058pt
+>
+File: ../GOOD_CODE/plots/Re15000_mf01/field_O2.png Graphic file (type png)
+<use ../GOOD_CODE/plots/Re15000_mf01/field_O2.png>
+Package pdftex.def Info: ../GOOD_CODE/plots/Re15000_mf01/field_O2.png  used on 
+input line 85.
+(pdftex.def)             Requested size: 446.39996pt x 237.05333pt.
+<../GOOD_CODE/plots/Re15000_mf01/field_CO2.png, id=237, 1071.5232pt x 569.0058p
+t>
+File: ../GOOD_CODE/plots/Re15000_mf01/field_CO2.png Graphic file (type png)
+<use ../GOOD_CODE/plots/Re15000_mf01/field_CO2.png>
+Package pdftex.def Info: ../GOOD_CODE/plots/Re15000_mf01/field_CO2.png  used on
+ input line 92.
+(pdftex.def)             Requested size: 446.39996pt x 237.05333pt.
+<../GOOD_CODE/plots/Re15000_mf01/field_H2O.png, id=239, 1071.5232pt x 569.0058p
+t>
+File: ../GOOD_CODE/plots/Re15000_mf01/field_H2O.png Graphic file (type png)
+<use ../GOOD_CODE/plots/Re15000_mf01/field_H2O.png>
+Package pdftex.def Info: ../GOOD_CODE/plots/Re15000_mf01/field_H2O.png  used on
+ input line 99.
+(pdftex.def)             Requested size: 446.39996pt x 237.05333pt.
+<../GOOD_CODE/plots/Re15000_mf01/field_CO.png, id=241, 1072.4868pt x 569.0058pt
+>
+File: ../GOOD_CODE/plots/Re15000_mf01/field_CO.png Graphic file (type png)
+<use ../GOOD_CODE/plots/Re15000_mf01/field_CO.png>
+Package pdftex.def Info: ../GOOD_CODE/plots/Re15000_mf01/field_CO.png  used on 
+input line 106.
+(pdftex.def)             Requested size: 446.39996pt x 236.83627pt.
+) (./sections/conclusion.tex [10 <../GOOD_CODE/plots_tuner/best_config_errors_R
+e18000.png> <../GOOD_CODE/plots/summary_error_vs_mf.png> <../GOOD_CODE/plots/su
+mmary_error_per_field.png>] [11 <../GOOD_CODE/plots/Re15000_mf01/field_T.png> <
+../GOOD_CODE/plots/Re15000_mf01/field_CH4.png>]
+[12 <../GOOD_CODE/plots/Re15000_mf01/field_O2.png> <../GOOD_CODE/plots/Re15000_
+mf01/field_CO2.png>] [13 <../GOOD_CODE/plots/Re15000_mf01/field_H2O.png> <../GO
+OD_CODE/plots/Re15000_mf01/field_CO.png>]) (./main.bbl)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 52.
+ [14]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 52.
+ (./main.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 52.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 52.
+Package rerunfilecheck Info: File `main.out' has not changed.
+(rerunfilecheck)             Checksum: BECEC13F14EC6A47EF489AA82CEFE52B;2009.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 52.
+ ) 
 Here is how much of TeX's memory you used:
- 23 strings out of 481239
- 614 string characters out of 5920377
- 236561 words of memory out of 5000000
- 15388 multiletter control sequences out of 15000+600000
- 532338 words of font info for 24 fonts, out of 8000000 for 9000
+ 6969 strings out of 481239
+ 100764 string characters out of 5920377
+ 367291 words of memory out of 5000000
+ 21989 multiletter control sequences out of 15000+600000
+ 545413 words of font info for 72 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 14i,0n,17p,112b,10s stack positions out of 5000i,500n,10000p,200000b,80000s
-/home/isacco/PROJECTS/GPR_EXPANSION/ARTICLE/main.tex:2:  ==> Fatal error occurred, no output PDF file produced!
+ 34i,12n,31p,1244b,404s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texl
+ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmtt12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
+sfonts/symbols/msbm10.pfb>
+Output written on main.pdf (14 pages, 3318652 bytes).
+PDF statistics:
+ 367 PDF objects out of 1000 (max. 8388607)
+ 302 compressed objects within 4 object streams
+ 80 named destinations out of 1000 (max. 500000)
+ 277 words of extra memory for PDF output out of 10000 (max. 10000000)
+

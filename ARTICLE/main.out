@@ -1,0 +1,27 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Related Work}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{SVD based Reduced Order Models}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Metodi tensoriali in meccanica dei fluidi}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{GPR per surrogati ingegneristici}{section.2}% 5
+\BOOKMARK [1][-]{section.3}{Metodologia}{}% 6
+\BOOKMARK [2][-]{subsection.3.1}{Formulazione del problema}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.2}{Pre-elaborazione dei dati}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.3}{POD + GPR \(metodo di riferimento\)}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.4}{HOSVD + GPR \(metodo proposto\)}{section.3}% 10
+\BOOKMARK [3][-]{subsubsection.3.4.1}{Organizzazione tensoriale}{subsection.3.4}% 11
+\BOOKMARK [3][-]{subsubsection.3.4.2}{Higher-Order SVD}{subsection.3.4}% 12
+\BOOKMARK [3][-]{subsubsection.3.4.3}{GPR sulle righe fattore parametriche}{subsection.3.4}% 13
+\BOOKMARK [3][-]{subsubsection.3.4.4}{Vantaggi rispetto a POD + GPR}{subsection.3.4}% 14
+\BOOKMARK [2][-]{subsection.3.5}{Metrica di errore}{section.3}% 15
+\BOOKMARK [1][-]{section.4}{Esperimenti}{}% 16
+\BOOKMARK [2][-]{subsection.4.1}{Dataset: simulazioni di flusso reattivo a idrogeno}{section.4}% 17
+\BOOKMARK [2][-]{subsection.4.2}{Suddivisione addestramento/test}{section.4}% 18
+\BOOKMARK [2][-]{subsection.4.3}{Selezione degli iperparametri dei kernel}{section.4}% 19
+\BOOKMARK [2][-]{subsection.4.4}{Struttura tensoriale HOSVD}{section.4}% 20
+\BOOKMARK [2][-]{subsection.4.5}{Implementazione dei GPR}{section.4}% 21
+\BOOKMARK [1][-]{section.5}{Risultati}{}% 22
+\BOOKMARK [2][-]{subsection.5.1}{Decadimento energetico degli spettri singolari}{section.5}% 23
+\BOOKMARK [2][-]{subsection.5.2}{Selezione degli iperparametri}{section.5}% 24
+\BOOKMARK [2][-]{subsection.5.3}{Accuratezza della ricostruzione}{section.5}% 25
+\BOOKMARK [2][-]{subsection.5.4}{Confronto dei campi spaziali}{section.5}% 26
+\BOOKMARK [1][-]{section.6}{Conclusione}{}% 27

@@ -1,0 +1,26 @@
+\providecommand{\newblock}{}
+\begin{thebibliography}{1}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{{\tt #1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\providecommand{\eprint}[2][]{\url{#2}}
+% Bibliography created with iopart-num v2.1
+% /biblio/bibtex/contrib/iopart-num
+
+\bibitem{williams1995gaussian}
+Williams C and Rasmussen C 1995 {\em Advances in neural information processing
+  systems\/} {\bf 8}
+
+\bibitem{aversano2021digital}
+Aversano G, Ferrarotti M and Parente A 2021 {\em Proceedings of the Combustion
+  Institute\/} {\bf 38} 5373--5381
+
+\bibitem{procacci2025stochastic}
+Procacci A, Iavarone S, Coussement A and Parente A 2025 {\em Proceedings of the
+  Combustion Institute\/} {\bf 41} 105981
+
+\bibitem{de2000multilinear}
+De~Lathauwer L, De~Moor B and Vandewalle J 2000 {\em SIAM journal on Matrix
+  Analysis and Applications\/} {\bf 21} 1253--1278
+
+\end{thebibliography}

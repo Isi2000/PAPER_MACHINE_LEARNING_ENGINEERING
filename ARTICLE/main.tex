@@ -1,28 +1,33 @@
 \documentclass[12pt]{iopart}
+
 \usepackage{iopams}
+\expandafter\let\csname equation*\endcsname\relax
+\expandafter\let\csname endequation*\endcsname\relax
+\usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{cite}
 \usepackage{hyperref}
-\usepackage{amsmath}
-\usepackage{amssymb}
+
+\newcommand{\Rey}{\mathit{Re}}
 
 \begin{document}
 
-\title{Your Paper Title Here}
+\title{A tensor based reduced order model for parametric interpolation for reactive flows}
 
-\author{First Author$^{1}$, Second Author$^{2}$}
+\author{Isacco Faglioni$^{1}$, Chiara Novelli$^{2}$, Alessandro Parente$^{2,3}$ and Soledad Le Clainche$^{1}$}
 
-\address{$^{1}$Department, University, City, Country}
-\address{$^{2}$Department, University, City, Country}
+\address{$^{1}$School of Aeronautical and Space Engineering, Universidad Polit\'ecnica de Madrid, Madrid, Spain}
+\address{$^{2}$Aero-Thermo-Mechanics Department, Universit\'e Libre de Bruxelles, Brussels, Belgium}
+\address{$^{3}$Brussels Institute for Thermal-fluid Systems and Clean Energy (BRITE), ULB and VUB, Belgium}
 
-\ead{author@email.com}
+\ead{isacco.faglioni@alumnos.upm.es}
 
 \begin{abstract}
 \input{sections/abstract}
 \end{abstract}
 
 \vspace{2pc}
-\noindent{\it Keywords}: machine learning, engineering
+\noindent{\it Keywords}: Reduced Order Modeling, HOSVD, Parametric Interpolation, Digital Twins, Reactive Flows
 
 \maketitle
 
@@ -30,7 +35,12 @@
 % Sections
 % =========================
 
-
+\input{sections/introduction.tex}
+\input{sections/related_work.tex}
+\input{sections/methodology.tex}
+\input{sections/experiments.tex}
+\input{sections/results.tex}
+\input{sections/conclusion.tex}
 
 % =========================
 % Bibliography

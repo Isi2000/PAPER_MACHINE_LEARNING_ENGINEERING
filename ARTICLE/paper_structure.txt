@@ -1,0 +1,60 @@
+STRUTTURA DEL PAPER
+===================
+
+1. Abstract (~200 parole)
+   - Problema
+   - Metodo proposto
+   - Dataset
+   - Risultato chiave con numero
+
+2. Introduction
+   - Motivazione applicativa (digital twin, flussi reattivi)
+   - Gap nella letteratura (perché POD+GPR non basta)
+   - Contributo del lavoro (2-3 punti precisi)
+   - Struttura del paper
+
+3. Problem Formulation
+   - Parametri operativi, snapshot, obiettivo dell'interpolazione
+   - Solo matematica astratta, niente di specifico al dataset
+
+4. Methods
+   4.1 POD+GPR (baseline)
+       - Breve, serve come riferimento
+   4.2 HOSVD+GPR (proposto)
+       - Organizzazione tensoriale degli snapshot
+       - Decomposizione HOSVD
+       - GPR univariati sui fattori parametrici
+       - Ricostruzione del campo
+   4.3 Selezione degli iperparametri (tuner)
+       - Ricerca a griglia su set di validazione dedicato
+
+5. Experimental Setup
+   - Dataset (100 casi, griglia 10x10, campi di interesse)
+   - Split train/test
+   - Dettagli implementativi
+
+6. Results
+   - Decadimento dei valori singolari
+   - Errore quantitativo: tabella + grafici
+     (includere percentuale di miglioramento relativo HOSVD vs POD)
+   - Confronto dei campi spaziali
+
+7. Discussion
+   - Perché HOSVD funziona meglio (interpretazione dei risultati)
+   - Limiti del metodo
+   - Quando NON conviene usarlo (es. griglia parametrica non strutturata)
+
+8. Conclusions
+   - Sintesi
+   - Lavori futuri
+
+
+NOTE
+----
+- Tenere Problem Formulation separata da Methods: il metodo resta
+  generico e applicabile ad altri problemi
+- La Discussion è la sezione più importante: spiega il PERCHÉ dei
+  risultati, non solo il COSA
+- Non mettere dettagli del dataset nella sezione Methods
+- Nella tabella degli errori mostrare anche il miglioramento relativo
+  percentuale HOSVD vs POD

@@ -1,3 +1,67 @@
-\section{Experiments}
+\section{Esperimenti}
+\label{sec:experiments}
 
-Experiments text here.
+\subsection{Dataset: simulazioni di flusso reattivo a idrogeno}
+
+Il dataset consiste di 100 simulazioni CFD ad alta fedeltà di una fiamma a diffusione di idrogeno turbolenta su una mesh assialsimmetrica 2-D. I due parametri operativi sono il numero di Reynolds $\Rey$ e la frazione di massa di idrogeno all'ingresso del combustibile $X_{\mathrm{H_2}}$, campionati su una griglia cartesiana uniforme $10\times10$:
+\begin{align}
+    \Rey &\in \{11000,\;12000,\;\ldots,\;20000\}, \\
+    X_{\mathrm{H_2}} &\in \{0.04,\;0.06,\;0.08,\;0.10,\;0.12,\;0.14,\;0.16,\;0.18,\;0.20,\;0.22\}.
+\end{align}
+Ciascuna simulazione fornisce la distribuzione spaziale 2-D di 44 quantità su una mesh $N_z \times N_r$, tra cui la temperatura $T$, le frazioni di massa delle specie e le quantità turbolente. Per la valutazione quantitativa lo studio si concentra su sei campi rappresentativi: la temperatura $T$ e le frazioni di massa di $\mathrm{CH_4}$, $\mathrm{O_2}$, $\mathrm{CO}$, $\mathrm{CO_2}$ e $\mathrm{H_2O}$, che costituiscono le quantità di maggiore interesse nelle applicazioni di combustione.
+
+\subsection{Suddivisione addestramento/test}
+
+La valutazione finale dei due metodi surrogati viene eseguita con il seguente protocollo. Il set di addestramento è composto dai $9\times9 = 81$ casi ottenuti escludendo l'intera riga $\Rey = 15000$ e l'intera colonna $X_{\mathrm{H_2}} = 0.10$ dalla griglia $10\times10$:
+\begin{align}
+    \Rey_{\mathrm{train}} &= \{11000,\;12000,\;13000,\;14000,\;16000,\;17000,\;18000,\;19000,\;20000\}, \\
+    X_{\mathrm{H_2,train}} &= \{0.04,\;0.06,\;0.08,\;0.12,\;0.14,\;0.16,\;0.18,\;0.20,\;0.22\}.
+\end{align}
+Entrambi i metodi ricevono gli stessi 81 snapshot di addestramento. I metodi vengono valutati su tutti e 100 i casi della griglia, con particolare interesse per i punti in cui $\Rey = 15000$ (non visto) o $X_{\mathrm{H_2}} = 0.10$ (non visto): tali combinazioni richiedono un'\emph{interpolazione} lungo la rispettiva dimensione parametrica.
+
+\subsection{Selezione degli iperparametri dei kernel}
+
+Gli iperparametri dei kernel GPR vengono selezionati tramite una ricerca a griglia esaustiva su un set di validazione dedicato, separato dal set di test finale, usando lo script \texttt{tuner.py}. In questa fase il set di addestramento è:
+\begin{align}
+    \Rey_{\mathrm{val\text{-}train}} &= \{11000,\;12000,\;14000,\;15000,\;16000,\;17000,\;19000,\;20000\},\\
+    X_{\mathrm{H_2,val\text{-}train}} &= X_{\mathrm{H_2,train}},
+\end{align}
+e il set di validazione è $\Rey_{\mathrm{val}} = \{13000,\;18000\}$, $X_{\mathrm{H_2,val}} = 0.10$.
+
+La ricerca spazia su $9 \times 6 \times 9 = 486$ configurazioni, combinando:
+\begin{itemize}
+    \item lunghezza scala del kernel 1-D (per i GPR HOSVD): $\ell_{\mathrm{1D}} \in \{0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0, 1.5, 2.0\}$;
+    \item famiglia di kernel 2-D (per il GPR POD): Matérn-$0.5$, Matérn-$1.5$, Matérn-$2.5$, RBF, RatQuad-$\alpha=1$, RatQuad-$\alpha=5$;
+    \item lunghezza scala del kernel 2-D: stessa griglia di $\ell_{\mathrm{1D}}$.
+\end{itemize}
+La famiglia del kernel 1-D è fissata a Matérn-$2.5$, poiché con soli 8 punti di addestramento lungo l'asse $\Rey$ la scelta della famiglia non è discriminante quanto quella della lunghezza scala. La configurazione ottimale viene selezionata minimizzando la somma degli errori medi HOSVD+GPR e POD+GPR sul set di validazione.
+
+\subsection{Struttura tensoriale HOSVD}
+
+Per il metodo HOSVD, gli 81 snapshot di addestramento vengono organizzati sulla griglia parametrica $9\times9$, ottenendo un tensore a 5 vie $\mathcal{T} \in \mathbb{R}^{9 \times 9 \times N_z \times N_r \times N_{\mathrm{sp}}}$. La soglia energetica per il troncamento dei modi è fissata al $99\%$ per tutti i modi. I ranghi di Tucker $(r_1, r_2, r_3, r_4, r_5)$ vengono determinati automaticamente da questo criterio.
+
+\subsection{Implementazione dei GPR}
+
+Per entrambi i metodi si usa un kernel prodotto tra un'ampiezza costante $\sigma_f^2$ e un kernel base. La lunghezza scala è tenuta fissa al valore selezionato dal tuner; solo l'ampiezza $\sigma_f^2$ viene ottimizzata massimizzando la log-verosimiglianza marginale. Il metodo HOSVD impiega due GPR univariati indipendenti (uno per l'asse $\Rey$, uno per l'asse $X_{\mathrm{H_2}}$), addestrati rispettivamente sulle righe di $\mathbf{U}_1$ e $\mathbf{U}_2$. Il metodo POD impiega un singolo GPR bivariato con lunghezze scala anisotrope corrispondenti a $\Rey$ e $X_{\mathrm{H_2}}$. In entrambi i casi gli ingressi vengono normalizzati nell'intervallo $[0,1]$ usando il range di addestramento prima dell'adattamento.
+
+Tutti gli esperimenti sono implementati in Python usando \texttt{scikit-learn} per il GPR e operazioni tensoriali native su \texttt{NumPy} per la decomposizione HOSVD e i prodotti modali.
+
+\begin{table}[htbp]
+\caption{Schema riassuntivo della configurazione sperimentale per entrambi i metodi surrogati.}
+\label{tab:setup}
+\centering
+\begin{tabular}{lll}
+\hline
+ & \textbf{POD + GPR} & \textbf{HOSVD + GPR} \\
+\hline
+Riduzione dimensionale & SVD su matrice appiattita & Tucker (HOSVD) su tensore a 5 vie \\
+Soglia energetica & 99\% & 99\% per modo \\
+Surrogato & 1 GPR bivariato & 2 GPR univariati \\
+Dimensione ingresso GPR & 2 $(\Rey, X_{\mathrm{H_2}})$ & 1 (solo $\Rey$ / solo $X_{\mathrm{H_2}}$) \\
+Famiglia kernel & selezionata dal tuner & Matérn-$2.5$ (fissata) \\
+Lunghezza scala & selezionata dal tuner & selezionata dal tuner \\
+Casi di addestramento & 81 (griglia $9\times9$) & 81 (griglia $9\times9$) \\
+Campi valutati & \multicolumn{2}{c}{$T$, CH$_4$, O$_2$, CO, CO$_2$, H$_2$O} \\
+\hline
+\end{tabular}
+\end{table}

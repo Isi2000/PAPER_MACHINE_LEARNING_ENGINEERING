@@ -1,3 +1,23 @@
 \section{Related Work}
 
-Related work text here.
+\subsection{SVD based Reduced Order Models}
+
+SVD has been used for reduced order modeling of fluid flows, reactive or not, since ANNO E CITAZIONE. The mathematical idea behind this class of algorithms is that of rearranging data into matricial form, decompose it with SVD and extracting a low dimensional rapresentaion of the system from the leading eigenvectors associated to the largest singular values. Depending on how data is preprocessed and rearranged the algorithms assume different names: 
+
+
+
+La Proper Orthogonal Decomposition (POD), nota anche come Analisi delle Componenti Principali (PCA) in ambito statistico, è la tecnica di riduzione dimensionale lineare più diffusa in fluidodinamica. Data una collezione di snapshot di flusso, la POD estrae un insieme di modi spaziali ordinati per contenuto energetico; ogni snapshot dell'ensemble può essere approssimato come combinazione lineare dei modi dominanti. I coefficienti di questa espansione, detti coefficienti POD, catturano la dipendenza dalle condizioni operative e sono molto più economici da interpolare rispetto ai campi completi ad alta dimensionalità.
+
+La Regressione a Processi Gaussiani (GPR) offre un'alternativa probabilistica che quantifica naturalmente l'incertezza della predizione~\cite{williams1995gaussian}; la sua combinazione con la POD è stata impiegata con successo nella costruzione di digital twin per flussi reattivi~\cite{aversano2021digital} e per la caratterizzazione stocastica di fiamme~\cite{procacci2025stochastic}. Un limite comune dei surrogati POD+GPR è che il problema di interpolazione dei coefficienti diventa più difficile all'aumentare del numero di parametri: un GPR multivariato che mappa tuple di condizioni operative in coefficienti POD deve essere addestrato su osservazioni sparse e soffre della maledizione della dimensionalità.
+
+\subsection{Metodi tensoriali in meccanica dei fluidi}
+
+Le decomposizioni tensoriali generalizzano la SVD matriciale ad array di ordine superiore e sono strumenti naturali quando i dati possiedono una struttura multi-modale. La decomposizione Higher-Order SVD (HOSVD)~\cite{de2000multilinear} fattorizza un tensore a $N$ vie in un array nucleo e un insieme di matrici fattore, una per modo. Rispetto alla decomposizione Canonical Polyadic (CP), il formato HOSVD è più semplice da calcolare (ciascuna matrice fattore si ottiene tramite una SVD matriciale standard) e conserva meglio la struttura quando i modi hanno significato fisico diverso.
+
+Nel contesto parametrico, organizzare gli snapshot su una griglia strutturata nello spazio dei parametri consente di trattare separatamente i modi parametrici e i modi spaziali/spettrali: questo è il principio chiave sfruttato nel presente lavoro.
+
+\subsection{GPR per surrogati ingegneristici}
+
+Il GPR è un metodo bayesiano non parametrico che pone una distribuzione a priori sullo spazio delle funzioni~\cite{williams1995gaussian}. Per spazi di ingresso a bassa dimensionalità è altamente competitivo, offrendo inferenza a posteriori in forma chiusa e stime analitiche dell'incertezza. La famiglia di kernel di Matérn è particolarmente diffusa nelle applicazioni ingegneristiche perché controlla la regolarità della funzione predetta tramite un singolo parametro $\nu$; la scelta $\nu = 5/2$ è comune in quanto garantisce differenziabilità in senso quadratico medio fino al secondo ordine.
+
+Combinato con un passo di riduzione dimensionale lineare, il GPR è stato applicato con successo ai flussi reattivi~\cite{aversano2021digital,procacci2025stochastic}. Il presente contributo si distingue dalla letteratura POD+GPR esistente in quanto sostituisce il singolo GPR multidimensionale con due GPR univariati indipendenti, reso possibile dalla struttura HOSVD dei dati di addestramento.

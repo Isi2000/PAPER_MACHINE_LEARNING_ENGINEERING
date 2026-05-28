@@ -1,3 +1,99 @@
-\section{Methodology}
+\section{Metodologia}
 
-Methodology text here.
+\subsection{Formulazione del problema}
+
+Sia $\boldsymbol{\mu} = (\mu_1, \mu_2) \in \mathcal{P} \subset \mathbb{R}^2$ una coppia di parametri operativi. Per ciascun $\boldsymbol{\mu}$, un solutore CFD ad alta fedeltà produce un campo di flusso multi-specie discretizzato su una mesh strutturata 2-D di $N_z \times N_r$ celle, ottenendo uno snapshot
+\begin{equation}
+    \mathbf{S}(\boldsymbol{\mu}) \in \mathbb{R}^{N_z \times N_r \times N_{\mathrm{sp}}},
+\end{equation}
+dove $N_{\mathrm{sp}}$ è il numero di specie trasportate e di quantità termodinamiche. Nel caso di studio, i parametri operativi sono il numero di Reynolds ($\mu_1 = \Rey$) e la frazione di massa di idrogeno al combustibile ($\mu_2 = X_{\mathrm{H_2}}$). Dato un insieme di addestramento di $N_{\mathrm{train}}$ snapshot in posizioni parametriche note $\{\boldsymbol{\mu}^{(k)}\}_{k=1}^{N_{\mathrm{train}}}$, l'obiettivo è predire $\mathbf{S}(\boldsymbol{\mu}^*)$ in un nuovo punto di test $\boldsymbol{\mu}^*$ senza eseguire il solutore CFD completo.
+
+\subsection{Pre-elaborazione dei dati}
+
+Tutti gli snapshot vengono normalizzati usando le statistiche calcolate esclusivamente sul set di addestramento, per evitare la contaminazione dei dati di test. Per ciascuna specie/quantità $s$, la media $\mu_s$ e la deviazione standard $\sigma_s$ di addestramento sono calcolate su tutte le celle e tutti i casi di addestramento. Lo snapshot normalizzato è
+\begin{equation}
+    \tilde{\mathbf{S}}(\boldsymbol{\mu}) = \frac{\mathbf{S}(\boldsymbol{\mu}) - \mu_s}{\sigma_s}.
+\end{equation}
+Le quantità con deviazione standard nulla (campi costanti) vengono lasciate invariate. Tutti i modelli surrogati operano sui dati normalizzati; le predizioni vengono ritrasformate prima del calcolo degli errori.
+
+\subsection{POD + GPR (metodo di riferimento)}
+
+Gli snapshot di addestramento vengono appiattiti e impilati in una matrice
+\begin{equation}
+    \mathbf{M} \in \mathbb{R}^{(N_z N_r N_{\mathrm{sp}}) \times N_{\mathrm{train}}},
+\end{equation}
+su cui viene eseguita una SVD troncata: $\mathbf{M} = \mathbf{V} \boldsymbol{\Sigma} \mathbf{W}^\top$. I modi spaziali $\mathbf{V}$ vengono mantenuti fino a una soglia di energia cumulativa del $99\%$, ottenendo $r_{\mathrm{POD}}$ modi. I vettori di coefficienti POD
+\begin{equation}
+    \mathbf{a}(\boldsymbol{\mu}^{(k)}) = \mathbf{V}_{:,1:r}^\top \, \mathbf{M}_{:,k} \in \mathbb{R}^{r_{\mathrm{POD}}}
+\end{equation}
+vengono poi usati come target per un GPR bivariato con ingresso $\boldsymbol{\mu} = (\mu_1, \mu_2)$. Il kernel è un prodotto tra un'ampiezza costante e un kernel base:
+\begin{equation}
+    k(\boldsymbol{\mu}, \boldsymbol{\mu}') = \sigma_f^2 \, k_{\mathrm{base}}(\boldsymbol{\mu}, \boldsymbol{\mu}'; \ell_1, \ell_2),
+\end{equation}
+dove la famiglia $k_{\mathrm{base}}$ e la lunghezza scala $\ell$ sono selezionate tramite una ricerca a griglia su un set di validazione dedicato (cfr.\ Sezione~\ref{sec:experiments}).
+Un GPR separato viene adattato per ciascun indice di modo POD (formulazione multi-output). Al punto di test $\boldsymbol{\mu}^*$, i coefficienti predetti $\hat{\mathbf{a}}$ vengono usati per ricostruire il campo:
+\begin{equation}
+    \hat{\mathbf{S}}_{\mathrm{POD}}(\boldsymbol{\mu}^*) = \mathbf{V}_{:,1:r} \, \hat{\mathbf{a}}.
+\end{equation}
+
+\subsection{HOSVD + GPR (metodo proposto)}
+
+\subsubsection{Organizzazione tensoriale}
+
+Quando gli snapshot di addestramento sono disponibili su una griglia regolare $\{\mu_1^{(i)}\}_{i=1}^{n_1} \times \{\mu_2^{(j)}\}_{j=1}^{n_2}$, con $N_{\mathrm{train}} = n_1 n_2$, i dati ammettono una naturale rappresentazione tensoriale:
+\begin{equation}
+    \mathcal{T} \in \mathbb{R}^{n_1 \times n_2 \times N_z \times N_r \times N_{\mathrm{sp}}},
+    \qquad
+    \mathcal{T}_{i,j,:,:,:} = \tilde{\mathbf{S}}(\mu_1^{(i)}, \mu_2^{(j)}).
+\end{equation}
+I primi due modi corrispondono agli assi parametrici, mentre i restanti tre sono modi spaziali e spettrali.
+
+\subsubsection{Higher-Order SVD}
+
+L'HOSVD~\cite{de2000multilinear} fattorizza $\mathcal{T}$ tramite una sequenza di dispiegamenti per modo. Per ciascun modo $n \in \{1,\ldots,5\}$, viene calcolato il dispiegamento $\mathbf{T}_{(n)}$ e ne vengono estratti i vettori singolari sinistri:
+\begin{equation}
+    \mathbf{T}_{(n)} = \mathbf{U}_n \boldsymbol{\Sigma}_n \mathbf{V}_n^\top,
+    \qquad
+    \mathbf{U}_n \in \mathbb{R}^{d_n \times d_n},
+\end{equation}
+dove $d_n$ è la dimensione del modo $n$. La matrice fattore $\mathbf{U}_n$ viene poi troncata alle sue $r_n$ colonne dominanti, con $r_n$ scelto per mantenere il $99\%$ dell'energia spettrale. Il nucleo di Tucker si ottiene per proiezione multi-modale:
+\begin{equation}
+    \mathcal{G} = \mathcal{T} \times_1 \mathbf{U}_1^\top \times_2 \mathbf{U}_2^\top \times_3 \mathbf{U}_3^\top \times_4 \mathbf{U}_4^\top \times_5 \mathbf{U}_5^\top,
+    \qquad
+    \mathcal{G} \in \mathbb{R}^{r_1 \times r_2 \times r_3 \times r_4 \times r_5}.
+\end{equation}
+Il tensore originale è recuperato esattamente (entro la soglia energetica) come
+\begin{equation}
+    \mathcal{T} \approx \mathcal{G} \times_1 \mathbf{U}_1 \times_2 \mathbf{U}_2 \times_3 \mathbf{U}_3 \times_4 \mathbf{U}_4 \times_5 \mathbf{U}_5.
+\end{equation}
+
+\subsubsection{GPR sulle righe fattore parametriche}
+
+Le righe delle matrici fattore parametriche $\mathbf{U}_1 \in \mathbb{R}^{n_1 \times r_1}$ e $\mathbf{U}_2 \in \mathbb{R}^{n_2 \times r_2}$ codificano come la decomposizione varia lungo ciascun asse parametrico in modo indipendente. Invece di un singolo GPR bivariato, vengono addestrati due GPR \emph{univariati} separati:
+\begin{align}
+    \mathrm{GPR}_1 &: \mu_1 \mapsto \mathbf{u}_1(\mu_1) \in \mathbb{R}^{r_1}, \\
+    \mathrm{GPR}_2 &: \mu_2 \mapsto \mathbf{u}_2(\mu_2) \in \mathbb{R}^{r_2}.
+\end{align}
+Ciascun GPR usa un kernel di Matérn-$2.5$ con un singolo scalare di lunghezza scala, appropriato per un ingresso monodimensionale; la lunghezza scala è selezionata tramite il tuner. Al punto di test $\boldsymbol{\mu}^* = (\mu_1^*, \mu_2^*)$, le righe fattore predette $\hat{\mathbf{u}}_1$ e $\hat{\mathbf{u}}_2$ vengono usate per contrarre parzialmente il nucleo di Tucker:
+\begin{equation}
+    \hat{\mathcal{G}}' = \mathcal{G} \times_1 \hat{\mathbf{u}}_1 \times_2 \hat{\mathbf{u}}_2
+    \in \mathbb{R}^{r_3 \times r_4 \times r_5}.
+\end{equation}
+La ricostruzione completa del campo si ottiene espandendo i modi spaziali e spettrali residui:
+\begin{equation}
+    \hat{\mathbf{S}}_{\mathrm{HOSVD}}(\boldsymbol{\mu}^*) = \hat{\mathcal{G}}' \times_3 \mathbf{U}_3 \times_4 \mathbf{U}_4 \times_5 \mathbf{U}_5.
+\end{equation}
+
+\subsubsection{Vantaggi rispetto a POD + GPR}
+
+Due vantaggi strutturali distinguono l'approccio HOSVD da POD+GPR.
+In primo luogo, i modi parametrici e i modi spaziali/spettrali sono separati \emph{per costruzione}; il nucleo di Tucker funge da tensore di accoppiamento, ma il GPR opera soltanto sulle righe fattore a bassa dimensionalità, non sui coefficienti di campo compressi.
+In secondo luogo, sostituire un singolo GPR bivariato con due GPR univariati riduce la dimensione effettiva dell'ingresso di ciascun problema di regressione, il che migliora l'efficienza campionaria e il condizionamento numerico~\cite{williams1995gaussian}. Ciò è particolarmente vantaggioso quando uno o entrambi i parametri di test si trovano al di fuori dell'involucro convesso della griglia di addestramento, ossia in regime di estrapolazione.
+
+\subsection{Metrica di errore}
+
+La qualità della predizione viene valutata tramite l'errore relativo $\ell^2$ per specie:
+\begin{equation}
+    \varepsilon_s = \frac{\|\hat{F}_s - F_s^{\mathrm{true}}\|_F}{\|F_s^{\mathrm{true}}\|_F},
+\end{equation}
+dove $\|\cdot\|_F$ denota la norma di Frobenius sulla griglia spaziale e $F_s$ è il campo 2-D della quantità $s$.

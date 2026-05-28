@@ -240,8 +240,10 @@ for re_test in RE_TEST_VALS:
         errors_p = [rel_error(recon_p[:, :, COL_IDX[n]],
                               T_test_true[:, :, COL_IDX[n]]) for n in IMPORTANT_FIELDS]
 
-        all_errors_h.append(errors_h)
-        all_errors_p.append(errors_p)
+        is_test_point = (re_test not in RE_TRAIN_VALS) or (round(mf_test, 2) not in mf_train_set)
+        if is_test_point:
+            all_errors_h.append(errors_h)
+            all_errors_p.append(errors_p)
 
         mean_h = np.nanmean(errors_h)
         mean_p = np.nanmean(errors_p)
@@ -380,8 +382,8 @@ ax.bar(x + width / 2, mean_per_field_p, width,
 ax.set_xticks(x)
 ax.set_xticklabels(IMPORTANT_FIELDS, rotation=45, ha='right', fontsize=9)
 ax.set_ylabel('Mean relative L2 error')
-ax.set_title(f'Mean error per field over all test cases\n'
-             f'Test Re={RE_TEST_VALS}, test mf={MF_TEST_VALS}')
+ax.set_title(f'Mean error per field over unseen points (Re or mf not in training)\n'
+             f'Test Re={[r for r in RE_VALS if r not in RE_TRAIN_VALS]}, test mf={MF_TEST}')
 ax.legend()
 ax.grid(True, axis='y', linestyle='--', alpha=0.5)
 plt.tight_layout()

@@ -65,7 +65,7 @@ MF_TEST = 0.12
 RE_TRAIN_VALS = [v for v in RE_VALS if v != RE_TEST]   # [11000, 13000, 17000, 19000]
 MF_TRAIN_VALS = [v for v in MF_VALS if v != MF_TEST]   # [0.04, 0.08, 0.16, 0.20]
 
-IMPORTANT_FIELDS = ['T', 'CO2', 'CH4', 'H2O', 'CO', 'O2', 'H2']
+IMPORTANT_FIELDS = ['T', 'CH4', 'O2', 'CO2', 'H2O',]
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -89,7 +89,7 @@ def hosvd(tensor, energy_threshold=0.99):
     for mode in tqdm(range(tensor.ndim), desc='HOSVD modes'):
         U, S, _ = np.linalg.svd(tl.unfold(tensor, mode), full_matrices=False)
         r = rank_by_energy(S, energy_threshold)
-        factors.append(U[:, :])
+        factors.append(U[:, :r])
         sv_list.append(S)
     core = tl.tenalg.multi_mode_dot(
         tensor, [f.T for f in factors], modes=list(range(tensor.ndim))
@@ -108,13 +108,13 @@ def minmax(a):
 
 
 def make_mo_gpr_2d():
-    kernel = ConstantKernel(1.0) * Matern(length_scale=np.ones(2), length_scale_bounds=(1e-10, 1e5), nu=2.5)
+    kernel = ConstantKernel(1.0) * Matern(length_scale=np.ones(2), length_scale_bounds='fixed', nu=2.5)
     base   = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=5, normalize_y=True)
     return MultiOutputRegressor(base)
 
 
 def make_mo_gpr_1d():
-    kernel = ConstantKernel(1.0) * Matern(length_scale=1.0, length_scale_bounds=(1e-10, 1e5), nu=2.5)
+    kernel = ConstantKernel(1.0) * Matern(length_scale=1.0, length_scale_bounds='fixed', nu=2.5)
     base   = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=5, normalize_y=True)
     return MultiOutputRegressor(base)
 
@@ -426,4 +426,4 @@ for name in IMPORTANT_FIELDS:
     plt.close(fig)
     print(f'Saved plots/field_{name}.png')
 
-plt.show()
+#plt.show()

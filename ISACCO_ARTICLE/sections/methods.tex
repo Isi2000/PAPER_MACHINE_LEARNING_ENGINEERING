@@ -1,0 +1,47 @@
+\section{Methods}
+
+Both methods described are fairly similar from a mathematical point of view. Training a machine learning model directly on CFD data is not feasible due to its extremely high dimensionality. If for example we consider a simulations that refine 100 points for each 3D spatial dimension and 20 thermochemical variables the dimensionality is $\mathbb{R}^{100^3 \times 20} = \mathbb{R}^{2 \times 10^7}$, which would require both a huge dataset and time for any machine learning model.
+The idea of SVD-based ROMs is to first reduce the dimensionality of the data by reorganizing the CFD simulations into a matrix $\mathbf{M} \in \mathbb{R}^{N_d \times N_s}$, so that the columns of $\mathbf{M}$ are the simulations reshaped as vectors.
+Applying SVD to $\mathbf{M}$ :
+\begin{equation}\label{eq:SVD}
+    \mathbf{M} = \mathbf{U} \boldsymbol{\Sigma} \mathbf{V}^T
+\end{equation}
+
+where $\mathbf{U} \in \mathbb{R}^{N_s \times N_s}$ and $\mathbf{V} \in \mathbb{R}^{N_d \times N_d}$ are orthogonal matrices, and $\boldsymbol{\Sigma} \in \mathbb{R}^{N_d \times N_s}$ is a rectangular diagonal matrix with non-negative entries $\sigma_1 \geq \sigma_2 \geq \cdots \geq \sigma_r \geq 0$, 
+with $r = \text{rank}(\mathbf{M})$. The columns of $\mathbf{V}$, denoted $\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_r \in \mathbb{R}^{N_d}$, are the right singular vectors of $\mathbf{M}$ and are  referred to as \textit{modes}. Each mode is a vector living in the same space as the original 
+snapshots and captures a coherent spatial structure of the dataset; the associated singular value  $\sigma_j$ quantifies the contribution of the $j$-th mode to the overall variance of the data,  with the modes ordered such that the first ones retain the most energetically significant structures.
+
+Equation~\ref{eq:SVD} says that each vectorized simulation can be rewritten as linear combination of left eigenvectors with coefficients given by the right eigenvectors. The key assumption for this class of ROMs is that new simulation that one wants to find lie on the span of the left eigenvectors estimated from the data. It is worth noting that this assumpion is reasonable given a \textit{steep} enough singular value decay.  
+
+
+Retaining only the $k \ll r$ leading modes, any snapshot $\mathbf{s} \in \mathbb{R}^{N_d}$  can be approximated as an explicit linear combination:
+
+\begin{equation}
+    \mathbf{s} \approx \sum_{j=1}^{k} z_j \mathbf{v}_j = \mathbf{V}_k \mathbf{z}
+\end{equation}
+
+where $\mathbf{V}_k \in \mathbb{R}^{N_d \times k}$ collects the first $k$ modes and 
+$\mathbf{z} = (z_1, \ldots, z_k)^T \in \mathbb{R}^k$ is the vector of modal coefficients, 
+obtained by projection:
+
+\begin{equation}
+    \mathbf{z} = \mathbf{V}_k^T \mathbf{s}
+\end{equation}
+
+The truncation rank $k$ is selected by requiring that the retained modes explain a 
+sufficiently large fraction of the total variance:
+
+\begin{equation}
+    \mathcal{E}(k) = \frac{\sum_{i=1}^{k} \sigma_i^2}{\sum_{i=1}^{r} \sigma_i^2} \geq \tau
+\end{equation}
+
+for some threshold $\tau$ close to unity, so that the approximation error introduced 
+by the truncation is negligible.
+
+\subsection{HOSVD+GPR}
+
+The main idea of the algorithm is very similar to 
+
+
+\subsection{Hyperparameter Selection}
+

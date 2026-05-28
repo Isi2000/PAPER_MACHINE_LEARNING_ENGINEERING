@@ -1,0 +1,8 @@
+\section{Introduction}
+The development of digital twins for reactive flows is one of the most important steps towards industry decarbonization. Being able to accurately reproduce the behaviour of a system allows to optimize industrial processes, improve energy efficiency and control strategies. Classical computational fluid dynamics (CFD) generates high fidelity simulations of how a system evolves,but due to the fact that is often expensive and time consuming it cannot provide a continuous profile of the behaviour of the system. 
+For this reason algorithms that upsample or super resolute the operational parametric space currently are a growing branch of research. The main goal is that of leveraging the information contained in the high fidelity CFD data to train a model able to generate a simulation of the system under new operating conditions in a fraction of the time. 
+In recent years some techniques based on Singular Value Decomposition (SVD) have been developed to do this \cite{aversano2021digital} \cite{aversano2021digital}. The main underlying idea is to use SVD to decompose the data into linear combination of eigenvectors, often called modes, and then train a machine learning model to estimate the coefficients of the combination for new points.  
+\\
+
+This work presents a novel reduced order model (ROM) based on the Higher Order Singular Value Decomposition (HOSVD) instead of SVD.
+ Section AAAA presents the current methods used for parametric interpolation and their limitations. Section BBBB describes the proposed method and its advantages. Finally, Section CCCC presents the results of the method on a test case and compares it with existing methods.
